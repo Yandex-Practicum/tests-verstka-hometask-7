@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   launchBrowser,
   compareLayout,
@@ -17,6 +18,8 @@ import {
   colorScheme,
   switchScheme,
   semanticTags,
+  fonts,
+  variantFontFormats,
 } from './tests.js';
 
 const [, , PROJECT_PATH, LANG = 'ru'] = process.argv;
@@ -68,6 +71,8 @@ const app = async (projectPath, lng) => {
       switchScheme(baseUrl),
       semanticTags(page, ['header', 'main', 'nav']),
       horizontalScroll(page),
+      fonts(path.join(projectPath, 'fonts', 'fonts.css'), ['Inter', 'PressStart2P']),
+      variantFontFormats(path.join(projectPath, 'fonts', 'fonts.css'), 'Inter'),
       compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-1440.jpg',
         pageImage: 'layout-1440.jpg',

@@ -1,3 +1,5 @@
+import fs from 'fs';
+import * as csstree from 'css-tree';
 import palette from 'image-palette';
 import pixels from 'image-pixels';
 import {
@@ -72,19 +74,61 @@ const semanticTags = async (page, tags) => {
   const missingTagNames = missingTags.map(({ tagName }) => tagName);
 
   if (missingTagNames.length) {
-    return [{
+    return {
       id: 'semanticTagsMissing',
       values: {
         tagNames: missingTagNames.join(', '),
       },
-    }];
+    };
   }
 
-  return [];
+  return false;
+};
+
+const fonts = (cssPath, fontList) => {
+  const cssCode = fs.readFileSync(cssPath, 'utf-8');
+  const ast = csstree.parse(cssCode);
+  const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
+  const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
+  const missingFonts = fontList.filter((font) => !fontCodeList.some((code) => code.includes(font)));
+
+  if (missingFonts.length !== 0) {
+    return {
+      id: 'fontsMissing',
+      values: {
+        fontNames: missingFonts.join(', '),
+      },
+    };
+  }
+
+  return false;
+};
+
+const variantFontFormats = (cssPath, font) => {
+  const cssCode = fs.readFileSync(cssPath, 'utf-8');
+  const ast = csstree.parse(cssCode);
+  const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
+  const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
+  const fontCode = fontCodeList.find((code) => code.includes(font)) ?? '';
+
+  const formats = ['woff2 supports variations', 'woff2-variations'];
+  const missingFontFormats = formats.filter((format) => !fontCode.includes(format));
+  if (!missingFontFormats.length !== 0) {
+    return {
+      id: 'variantFontFormatMissing',
+      values: {
+        formats: missingFontFormats.join(', '),
+      },
+    };
+  }
+
+  return false;
 };
 
 export {
   colorScheme,
   switchScheme,
   semanticTags,
+  fonts,
+  variantFontFormats,
 };
