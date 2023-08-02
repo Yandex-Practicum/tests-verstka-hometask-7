@@ -125,10 +125,30 @@ const variantFontFormats = (cssPath, font) => {
   return false;
 };
 
+const transition = (styleCode) => {
+  const ast = csstree.parse(styleCode);
+
+  const transitionDeclarations = csstree.findAll(ast, (node) => node.type === 'Declaration' && (node.property === 'transition' || node.property === 'transition-property'));
+  const transitionProperties = transitionDeclarations.map((decl) => csstree.generate(decl));
+  const values = transitionProperties
+    .map((prop) => prop.split(':')[1])
+    .map((value) => value.split(','))
+    .flat()
+    .map((value) => value.split(' '))
+    .flat();
+
+  if (values.some((value) => value === 'all')) {
+    return { id: 'transition' };
+  }
+
+  return false;
+};
+
 export {
   colorScheme,
   switchScheme,
   semanticTags,
   fonts,
   variantFontFormats,
+  transition,
 };

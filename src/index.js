@@ -20,7 +20,11 @@ import {
   semanticTags,
   fonts,
   variantFontFormats,
+  transition,
 } from './tests.js';
+import {
+  getStyleCode,
+} from './utils.js';
 
 const [, , PROJECT_PATH, LANG = 'ru'] = process.argv;
 
@@ -61,6 +65,7 @@ const app = async (projectPath, lng) => {
     const viewport = { width: 1440, height: 1080 };
     const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
     const { browser, page } = await launchBrowser(baseUrl, { launchOptions, viewport });
+    const styleCode = getStyleCode(projectPath);
     const errors = (await Promise.all([
       w3c(projectPath, 'index.html'),
       stylelint(projectPath),
@@ -73,6 +78,7 @@ const app = async (projectPath, lng) => {
       horizontalScroll(page),
       fonts(path.join(projectPath, 'fonts', 'fonts.css'), ['Inter', 'PressStart2P']),
       variantFontFormats(path.join(projectPath, 'fonts', 'fonts.css'), 'Inter'),
+      transition(styleCode),
       compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-1440.jpg',
         pageImage: 'layout-1440.jpg',

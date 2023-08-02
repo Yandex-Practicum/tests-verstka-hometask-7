@@ -6,5 +6,6 @@ export default {
     semanticTagsMissing: 'Отсутствуют семантические теги: `{{ tagNames }}`.',
     fontsMissing: 'Отсутствуют шрифты: `{{ fontNames }}`.',
     variantFontFormatMissing: 'При подключении вариативного шрифта не указаны форматы: `{{ formats }}`.',
+    transition: 'Запрещено использовать значение `all` в свойствах `transition` и `transition-property`.',
   },
 };
