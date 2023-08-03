@@ -92,7 +92,7 @@ const fonts = (cssPath, fontList) => {
   const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
   const missingFonts = fontList.filter((font) => !fontCodeList.some((code) => code.includes(font)));
 
-  if (missingFonts.length !== 0) {
+  if (missingFonts.length) {
     return {
       id: 'fontsMissing',
       values: {
@@ -110,10 +110,10 @@ const variantFontFormats = (cssPath, font) => {
   const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
   const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
   const fontCode = fontCodeList.find((code) => code.includes(font)) ?? '';
-
   const formats = ['woff2 supports variations', 'woff2-variations'];
   const missingFontFormats = formats.filter((format) => !fontCode.includes(format));
-  if (!missingFontFormats.length !== 0) {
+
+  if (missingFontFormats.length !== 0) {
     return {
       id: 'variantFontFormatMissing',
       values: {
@@ -144,6 +144,16 @@ const transition = (styleCode) => {
   return false;
 };
 
+const inlineSVG = async (page) => {
+  const svgList = await page.evaluate(() => (
+    Array.from(document.querySelectorAll('svg > :not(use):first-child'))
+  ));
+  if (svgList.length !== 1) {
+    return { id: 'inlineSVG' };
+  }
+  return false;
+};
+
 export {
   colorScheme,
   switchScheme,
@@ -151,4 +161,5 @@ export {
   fonts,
   variantFontFormats,
   transition,
+  inlineSVG,
 };

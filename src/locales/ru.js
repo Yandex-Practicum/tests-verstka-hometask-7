@@ -7,5 +7,6 @@ export default {
     fontsMissing: 'Отсутствуют шрифты: `{{ fontNames }}`.',
     variantFontFormatMissing: 'При подключении вариативного шрифта не указаны форматы: `{{ formats }}`.',
     transition: 'Запрещено использовать значение `all` в свойствах `transition` и `transition-property`.',
+    inlineSVG: 'Только SVG с сердцем внутри карточки вставлены инлайново (необходимо для анимации), остальные — через symbol + use.',
   },
 };

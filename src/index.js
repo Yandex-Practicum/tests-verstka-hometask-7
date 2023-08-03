@@ -21,6 +21,7 @@ import {
   fonts,
   variantFontFormats,
   transition,
+  inlineSVG,
 } from './tests.js';
 import {
   getStyleCode,
@@ -79,6 +80,7 @@ const app = async (projectPath, lng) => {
       fonts(path.join(projectPath, 'fonts', 'fonts.css'), ['Inter', 'PressStart2P']),
       variantFontFormats(path.join(projectPath, 'fonts', 'fonts.css'), 'Inter'),
       transition(styleCode),
+      inlineSVG(page),
       compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-1440.jpg',
         pageImage: 'layout-1440.jpg',
