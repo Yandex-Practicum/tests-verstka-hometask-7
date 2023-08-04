@@ -105,12 +105,12 @@ const fonts = (cssPath, fontList) => {
 };
 
 const variantFontFormats = (cssPath, font) => {
+  const formats = ['woff2 supports variations', 'woff2-variations'];
   const cssCode = fs.readFileSync(cssPath, 'utf-8');
   const ast = csstree.parse(cssCode);
   const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
   const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
   const fontCode = fontCodeList.find((code) => code.includes(font)) ?? '';
-  const formats = ['woff2 supports variations', 'woff2-variations'];
   const missingFontFormats = formats.filter((format) => !fontCode.includes(format));
 
   if (missingFontFormats.length !== 0) {
@@ -125,9 +125,79 @@ const variantFontFormats = (cssPath, font) => {
   return false;
 };
 
+const variantFontWeight = (cssPath, font) => {
+  const weights = ['400', '465', '700', '785'];
+  const cssCode = fs.readFileSync(cssPath, 'utf-8');
+  const ast = csstree.parse(cssCode);
+  const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
+  const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
+  const fontCode = fontCodeList.find((code) => code.includes(font)) ?? '';
+  const fontWeight = fontCode.split(';').find((item) => item.includes('font-weight'));
+
+  if (!fontWeight) {
+    return {
+      id: 'variantFontWeightMissing',
+      values: {
+        weights: weights.join(', '),
+      },
+    };
+  }
+
+  const weightValues = fontWeight
+    .split(':')[1]
+    .split(' ');
+  const missingFontWeights = weights.filter((value) => !weightValues.includes(value));
+
+  if (missingFontWeights.length) {
+    return {
+      id: 'variantFontWeightMissing',
+      values: {
+        weights: missingFontWeights.join(', '),
+      },
+    };
+  }
+
+  return false;
+};
+
+const varsDeclAndUsage = (styleCode) => {
+  const ast = csstree.parse(styleCode);
+  const variableDeclarations = csstree.findAll(ast, (node) => node?.property?.startsWith('--'));
+  const variableDeclarationsList = variableDeclarations.map((decl) => csstree.generate(decl));
+
+  if (variableDeclarationsList.length === 0) {
+    return { id: 'varsNotDeclOrNotUsage' };
+  }
+
+  const variableUsages = csstree.findAll(ast, (node) => node?.name?.startsWith('--'));
+  const variableUsagesList = variableUsages.map((decl) => csstree.generate(decl));
+
+  if (variableUsagesList.length === 0) {
+    return { id: 'varsNotDeclOrNotUsage' };
+  }
+
+  return false;
+};
+
+const fontVariationSettings = (styleCode) => {
+  const ast = csstree.parse(styleCode);
+  const settings = csstree.find(ast, (node) => node.property === 'font-variation-settings');
+
+  if (!settings) {
+    return { id: 'fontVariationSettingsMissing' };
+  }
+
+  const settingsCode = csstree.generate(settings);
+
+  if (!settingsCode.includes('wght')) {
+    return { id: 'fontVariationSettingsMissing' };
+  }
+
+  return false;
+};
+
 const transition = (styleCode) => {
   const ast = csstree.parse(styleCode);
-
   const transitionDeclarations = csstree.findAll(ast, (node) => node.type === 'Declaration' && (node.property === 'transition' || node.property === 'transition-property'));
   const transitionProperties = transitionDeclarations.map((decl) => csstree.generate(decl));
   const values = transitionProperties
@@ -160,6 +230,9 @@ export {
   semanticTags,
   fonts,
   variantFontFormats,
+  variantFontWeight,
+  varsDeclAndUsage,
+  fontVariationSettings,
   transition,
   inlineSVG,
 };

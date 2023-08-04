@@ -20,6 +20,9 @@ import {
   semanticTags,
   fonts,
   variantFontFormats,
+  variantFontWeight,
+  varsDeclAndUsage,
+  fontVariationSettings,
   transition,
   inlineSVG,
 } from './tests.js';
@@ -79,6 +82,9 @@ const app = async (projectPath, lng) => {
       horizontalScroll(page),
       fonts(path.join(projectPath, 'fonts', 'fonts.css'), ['Inter', 'PressStart2P']),
       variantFontFormats(path.join(projectPath, 'fonts', 'fonts.css'), 'Inter'),
+      variantFontWeight(path.join(projectPath, 'fonts', 'fonts.css'), 'Inter'),
+      varsDeclAndUsage(styleCode),
+      fontVariationSettings(styleCode),
       transition(styleCode),
       inlineSVG(page),
       compareLayout(baseUrl, {
