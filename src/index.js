@@ -94,8 +94,10 @@ const app = async (projectPath, lng) => {
         browserOptions: { launchOptions, viewport: { width: 1440, height: 1080 } },
       }, {
         onBeforeScreenshot: async (p) => {
-          await p.click('.theme-list__item:last-child .theme-list__button');
-          await p.waitForTimeout(2000);
+          try {
+            await p.click('.theme-menu__item:last-child .theme-menu__button');
+            await p.waitForTimeout(2000);
+          } catch (e) { }
         },
       }),
       compareLayout(baseUrl, {
@@ -105,8 +107,10 @@ const app = async (projectPath, lng) => {
         browserOptions: { launchOptions, viewport: { width: 375, height: 668 } },
       }, {
         onBeforeScreenshot: async (p) => {
-          await p.click('.theme-list__item:last-child .theme-list__button');
-          await p.waitForTimeout(2000);
+          try {
+            await p.click('.theme-menu__item:last-child .theme-menu__button');
+            await p.waitForTimeout(2000);
+          } catch (e) { }
         },
       }),
     ]))

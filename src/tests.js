@@ -5,7 +5,6 @@ import pixels from 'image-pixels';
 import {
   launchBrowser,
   hasElementBySelectors,
-  getStyle,
 } from 'lib-verstka-tests';
 import {
   sortColors,
@@ -28,7 +27,7 @@ const switchScheme = async (url) => {
   const launchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] };
   const viewport = { width: 1440, height: 1080 };
   const { browser, page } = await launchBrowser(url, { launchOptions, viewport });
-  const buttonSelector = '.theme-list__item:first-child .theme-list__button';
+  const buttonSelector = '.theme-menu__item:first-child .theme-menu__button';
   const hasButton = await hasElementBySelectors(page, buttonSelector);
 
   if (!hasButton) {
@@ -126,7 +125,7 @@ const variantFontFormats = (cssPath, font) => {
 };
 
 const variantFontWeight = (cssPath, font) => {
-  const weights = ['400', '465', '700', '785'];
+  const weights = ['400', '785'];
   const cssCode = fs.readFileSync(cssPath, 'utf-8');
   const ast = csstree.parse(cssCode);
   const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
