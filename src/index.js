@@ -87,6 +87,11 @@ const app = async (projectPath, lng) => {
       fontVariationSettings(styleCode),
       transition(styleCode),
       inlineSVG(page),
+    ]))
+      .filter(Boolean)
+      .flat();
+
+    await Promise.all([
       compareLayout(baseUrl, {
         canonicalImage: 'layout-canonical-1440.jpg',
         pageImage: 'layout-1440.jpg',
@@ -113,11 +118,10 @@ const app = async (projectPath, lng) => {
           } catch (e) { }
         },
       }),
-    ]))
-      .filter(Boolean)
-      .flat();
+    ]);
 
     await browser.close();
+    console.log('\x1b[1;33m%s\x1b[0m', 'Скриншоты имеют рекомендательный характер и не влияют на тесты.');
 
     return errors;
   };

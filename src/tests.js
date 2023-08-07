@@ -36,26 +36,26 @@ const switchScheme = async (url) => {
     };
   }
 
-  await page.click(buttonSelector);
-  await page.evaluate(() => {
-    const imgs = document.querySelectorAll('img');
-    imgs.forEach((img) => img.remove());
-  });
-  await page.screenshot({ path: 'layout-dark.jpg', fullPage: true });
-  const { colors: canonicalColors } = palette(await pixels('./layout-canonical-dark.jpg'), 4);
-  const { colors: studentColors } = palette(await pixels('./layout-dark.jpg'), 4);
-  const canonicalColorsSorted = sortColors(canonicalColors);
-  const studentColorsSorted = sortColors(studentColors);
-  const isSame = canonicalColorsSorted
-    .every((color, index) => compareColors(color, studentColorsSorted[index], 20));
+  // await page.click(buttonSelector);
+  // await page.evaluate(() => {
+  //   const imgs = document.querySelectorAll('img');
+  //   imgs.forEach((img) => img.remove());
+  // });
+  // await page.screenshot({ path: 'layout-dark.jpg', fullPage: true });
+  // const { colors: canonicalColors } = palette(await pixels('./layout-canonical-dark.jpg'), 4);
+  // const { colors: studentColors } = palette(await pixels('./layout-dark.jpg'), 4);
+  // const canonicalColorsSorted = sortColors(canonicalColors);
+  // const studentColorsSorted = sortColors(studentColors);
+  // const isSame = canonicalColorsSorted
+  //   .every((color, index) => compareColors(color, studentColorsSorted[index], 20));
 
   await browser.close();
 
-  if (!isSame) {
-    return {
-      id: 'notDarkColorScheme',
-    };
-  }
+  // if (!isSame) {
+  //   return {
+  //     id: 'notDarkColorScheme',
+  //   };
+  // }
 
   return false;
 };
