@@ -161,14 +161,24 @@ const variantFontWeight = (cssPath, font) => {
 
 const varsDeclAndUsage = (styleCode) => {
   const ast = csstree.parse(styleCode);
-  const variableDeclarations = csstree.findAll(ast, (node) => node?.property?.startsWith('--'));
+  const variableDeclarations = csstree.findAll(ast, (node) => {
+    if (typeof node?.property === 'string') {
+      return node?.property.startsWith('--');
+    }
+    return false;
+  });
   const variableDeclarationsList = variableDeclarations.map((decl) => csstree.generate(decl));
 
   if (variableDeclarationsList.length === 0) {
     return { id: 'varsNotDeclOrNotUsage' };
   }
 
-  const variableUsages = csstree.findAll(ast, (node) => node?.name?.startsWith('--'));
+  const variableUsages = csstree.findAll(ast, (node) => {
+    if (typeof node?.name === 'string') {
+      return node?.name.startsWith('--');
+    }
+    return false;
+  });
   const variableUsagesList = variableUsages.map((decl) => csstree.generate(decl));
 
   if (variableUsagesList.length === 0) {
