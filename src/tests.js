@@ -131,7 +131,7 @@ const variantFontWeight = (cssPath, font) => {
   const fontNodes = csstree.findAll(ast, (node) => node.type === 'Atrule' && node.name === 'font-face');
   const fontCodeList = fontNodes.map((node) => csstree.generate(node.block));
   const fontCode = fontCodeList.find((code) => code.includes(font)) ?? '';
-  const fontWeight = fontCode.split(';').find((item) => item.includes('font-weight'));
+  const fontWeight = fontCode.replace(/^{+|}+$/g, '').split(';').find((item) => item.includes('font-weight'));
 
   if (!fontWeight) {
     return {
